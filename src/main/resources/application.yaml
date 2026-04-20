@@ -1,0 +1,12 @@
+spring:
+
+  application:
+    name: BookHubBack
+
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;database=BOOKHUB;encrypt=true;trustServerCertificate=true
+    username: SA
+    password: Pa$$w0rd!
+
+  banner:
+    location: file:banner.txt
