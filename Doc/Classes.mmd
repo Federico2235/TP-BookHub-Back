@@ -1,0 +1,49 @@
+---
+title: BookHub
+---
+classDiagram
+
+    class User {
+        -long id
+        -String firstName
+        -String lastName
+        -String email
+        -String password
+        -Authorities[] authorities
+    }
+    class Book {
+        -long id
+        -String title
+        -String author
+        -String isbn
+        -Category category
+        -String shortDesc
+        -String longDesc
+    }
+    class BookCopy {
+        -long idCopy
+        -Etat copyCondition
+        -Status status
+    }
+    class Borrow {
+        -long borrowerId
+        -long bookCopyId
+        -Date borrowStart
+        -Date borrowEnd
+        -Date returnDate
+    }
+    class Category {
+        -long id
+        -String label
+    }
+    class Reservation {
+        -long id
+        -long userId
+        -long copyId
+        -Date date
+    }
+    class StatusEnum {
+        -Emprunté
+        -Disponible
+        -Réservé
+    }
