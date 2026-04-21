@@ -19,31 +19,36 @@ classDiagram
         -Category category
         -String shortDesc
         -String longDesc
+        -String imgUrl
+        -BookCondition condition
     }
-    class BookCopy {
-        -long idCopy
-        -Etat copyCondition
-        -Status status
+    class Status {
+        <<enumeration>>
+        AVAILABLE
+        BORROWED
+        RESERVED
+        BLOCKED
+    }
+    class BookCondition {
+        <<enumeration>>
+        PRISTINE
+        USED
+        POOR
+        UNUSABLE
     }
     class Borrow {
         -long borrowerId
-        -long bookCopyId
+        -long bookId
         -Date borrowStart
         -Date borrowEnd
         -Date returnDate
-    }
-    class Category {
-        -long id
-        -String label
     }
     class Reservation {
         -long id
         -long userId
         -long copyId
-        -Date date
     }
-    class StatusEnum {
-        -Emprunté
-        -Disponible
-        -Réservé
+    class Category {
+        -long id
+        -String label
     }
