@@ -14,12 +14,11 @@ public class DTOBookMapper {
     private final EntityManager entityManager;
 
     public BookDTO toDTO(Book book) {
-        BookDTO bookDTO = new BookDTO(
-                book.getTitle(),
-                book.getAuthor(),
-                book.getIsbn(),
-                book.getCategory().getId()
-        );
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setTitle(book.getTitle());
+        bookDTO.setAuthor(book.getAuthor());
+        bookDTO.setIsbn(book.getIsbn());
+        bookDTO.setCategoryId(book.getCategory().getId());
         if(!book.getShortDesc().isBlank()) {
             bookDTO.setShortDesc(book.getShortDesc());
         }
@@ -37,27 +36,30 @@ public class DTOBookMapper {
         }
         return bookDTO;
     }
-
+    //Convertit un BookDTO en une instance de Book en utilisant un constructeur vide + setters
     public Book toBook(BookDTO bookDTO) {
+        //Récupère la Category grâce à la categoryId présente dans le BookDTO
         Category category  = entityManager.getReference(Category.class, bookDTO.getCategoryId());
         Book book = new Book();
         book.setTitle(bookDTO.getTitle());
         book.setAuthor(bookDTO.getAuthor());
         book.setIsbn(bookDTO.getIsbn());
         book.setCategory(category);
-        if(!bookDTO.getShortDesc().isBlank()) {
+
+        //Champs non obligatoires donc vérification de présence de valeur avant setter
+        if(bookDTO.getShortDesc() != null) {
             book.setShortDesc(bookDTO.getShortDesc());
         }
-        if(!bookDTO.getLongDesc().isBlank()) {
+        if(bookDTO.getLongDesc() != null) {
             book.setShortDesc(bookDTO.getLongDesc());
         }
-        if(!bookDTO.getImgUrl().isBlank()) {
+        if(bookDTO.getImgUrl() != null) {
             book.setShortDesc(bookDTO.getImgUrl());
         }
-        if(!bookDTO.getCondition().name.isBlank()) {
+        if(bookDTO.getCondition().name != null) {
             book.setShortDesc(bookDTO.getCondition().name);
         }
-        if(!bookDTO.getStatus().name.isBlank()) {
+        if(bookDTO.getStatus().name != null) {
             book.setShortDesc(bookDTO.getStatus().name);
         }
        return book;
