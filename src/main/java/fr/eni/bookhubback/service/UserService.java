@@ -20,7 +20,7 @@ public class UserService implements CrudService<User, UserDTO>{
 
 
     @Override
-    public List selectAll() {
+    public List<User> selectAll() {
         return userRepository.findAll();
     }
 
