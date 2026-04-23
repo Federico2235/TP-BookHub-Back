@@ -1,8 +1,8 @@
 package fr.eni.bookhubback.controller;
 
 import fr.eni.bookhubback.businessObject.entity.User;
-import fr.eni.bookhubback.mapper.DTOLoginRequest;
-import fr.eni.bookhubback.mapper.DTOLoginResponse;
+import fr.eni.bookhubback.businessObject.DTO.DTOLoginRequest;
+import fr.eni.bookhubback.businessObject.DTO.DTOLoginResponse;
 import fr.eni.bookhubback.security.JwtUtils;
 import fr.eni.bookhubback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

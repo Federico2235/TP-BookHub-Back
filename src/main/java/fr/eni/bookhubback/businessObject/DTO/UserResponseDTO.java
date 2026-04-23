@@ -1,7 +1,6 @@
 package fr.eni.bookhubback.businessObject.DTO;
 
 import fr.eni.bookhubback.businessObject.enums.Role;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserDTO {
+public class UserResponseDTO {
     private String firstName;
     private String lastName;
     private String email;
     private Role role;
-    private String password;
 }

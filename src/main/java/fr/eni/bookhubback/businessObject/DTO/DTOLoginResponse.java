@@ -1,4 +1,4 @@
-package fr.eni.bookhubback.mapper;
+package fr.eni.bookhubback.businessObject.DTO;
 
 public class DTOLoginResponse {
     private String token;
