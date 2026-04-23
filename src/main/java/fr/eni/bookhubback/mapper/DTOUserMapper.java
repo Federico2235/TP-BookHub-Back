@@ -14,7 +14,6 @@ public class DTOUserMapper {
 
     public UserDTO toDTO(User user) {
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
@@ -28,6 +27,8 @@ public class DTOUserMapper {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
+        user.setRole(userDTO.getRole());
+        user.setPassword(userDTO.getPassword());
 
        return user;
     }

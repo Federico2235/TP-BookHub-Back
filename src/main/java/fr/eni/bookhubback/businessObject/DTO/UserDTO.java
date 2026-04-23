@@ -12,9 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDTO {
-    Long id;
     private String firstName;
     private String lastName;
     private String email;
     private Role role;
+    private String password;
 }

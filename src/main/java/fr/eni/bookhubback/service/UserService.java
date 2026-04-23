@@ -7,6 +7,7 @@ import fr.eni.bookhubback.exception.UserNotFoundException;
 import fr.eni.bookhubback.mapper.DTOUserMapper;
 import fr.eni.bookhubback.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserService implements CrudService<User, UserDTO>{
 
     private final UserRepository userRepository;
     private final DTOUserMapper dtoUserMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -36,7 +38,9 @@ public class UserService implements CrudService<User, UserDTO>{
 
     @Override
     public User save(UserDTO userDTO) {
-        return userRepository.save(userRepository.save(dtoUserMapper.toUser(userDTO)));
+            User user = dtoUserMapper.toUser(userDTO);
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            return userRepository.save(user);
     }
 
     public User findByEmail(String email){return userRepository.findByEmail(email).orElseThrow(()-> new UseByMailNotFoundException(email));
