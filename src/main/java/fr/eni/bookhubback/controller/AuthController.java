@@ -4,6 +4,7 @@ import fr.eni.bookhubback.businessObject.entity.User;
 import fr.eni.bookhubback.mapper.DTOLoginRequest;
 import fr.eni.bookhubback.mapper.DTOLoginResponse;
 import fr.eni.bookhubback.security.JwtUtils;
+import fr.eni.bookhubback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils; // ref vers notre class utilitaire de création de JWT
-
+    @Autowired
+    private UserService userService;
     @Autowired
     AuthenticationConfiguration authenticationConfiguration; // ref vers la classe d'authentification de Spring
     @PostMapping("/login")
@@ -37,14 +39,15 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String jwt = jwtUtils.generateJwtToken(authentication);
-
+                   User user=userService.findByEmail(request.email());
+                   Long userId= user.getId();
             return ResponseEntity.ok(
-                    new DTOLoginResponse(jwt, "Connexion réussie")
+                    new DTOLoginResponse(jwt, "Connexion réussie",userId)
             );
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new DTOLoginResponse(null, "Email ou mot de passe incorrect")
+                    new DTOLoginResponse(null, "Email ou mot de passe incorrect",null)
             );
         }
     }
