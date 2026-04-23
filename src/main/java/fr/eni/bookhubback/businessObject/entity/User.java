@@ -11,6 +11,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "USERS")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
