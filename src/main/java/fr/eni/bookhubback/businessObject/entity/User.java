@@ -3,10 +3,6 @@ package fr.eni.bookhubback.businessObject.entity;
 import fr.eni.bookhubback.businessObject.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.jspecify.annotations.Nullable;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 
 @Entity
 @Table(name = "USERS")
