@@ -35,10 +35,7 @@ public class BorrowController {
     @GetMapping("/api/borrows/user/{id}")
     public ResponseEntity<?> getReservation(@PathVariable long id) {
         try {
-            List<BorrowResponseDTO> borrows = borrowService.findByUserId(id).stream()
-                    .map(dtoBorrowMapper::toResponseDTO)
-                    .toList();
-
+            List<Borrow> borrows = borrowService.findByUserId(id);
             return ResponseEntity.ok(borrows);
 
         } catch (UserNotFoundException e) {
