@@ -1,10 +1,9 @@
 package fr.eni.bookhubback.businessObject.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "RESERVATION")
@@ -15,9 +14,16 @@ import lombok.*;
 @ToString
 public class Reservation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false)
-    private long userId;
-    @Column(nullable = false)
-    private long copyId;
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    @Setter
+    @OneToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+    @Column()
+    private Date date = new Date();
 }

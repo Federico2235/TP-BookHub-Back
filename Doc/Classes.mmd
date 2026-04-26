@@ -2,14 +2,13 @@
 title: BookHub
 ---
 classDiagram
-
     class User {
         -long id
         -String firstName
         -String lastName
         -String email
         -String password
-        -Authorities[] authorities
+        -Role role
     }
     class Book {
         -long id
@@ -20,9 +19,10 @@ classDiagram
         -String shortDesc
         -String longDesc
         -String imgUrl
+        -AvailabilityStatus status
         -BookCondition condition
     }
-    class Status {
+    class AvailabilityStatus {
         <<enumeration>>
         AVAILABLE
         BORROWED
@@ -36,8 +36,14 @@ classDiagram
         POOR
         UNUSABLE
     }
+    class Role {
+        <<enumeration>>
+        MEMBER
+        LIBRARIAN
+        ADMIN
+    }
     class Borrow {
-        -long borrowerId
+        -long userId
         -long bookId
         -Date borrowStart
         -Date borrowEnd
@@ -45,8 +51,8 @@ classDiagram
     }
     class Reservation {
         -long id
-        -long userId
-        -long copyId
+        -User user
+        -Book book
     }
     class Category {
         -long id
