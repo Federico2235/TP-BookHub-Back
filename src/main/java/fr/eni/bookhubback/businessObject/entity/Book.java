@@ -45,4 +45,7 @@ public class Book {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AvailabilityStatus status = AvailabilityStatus.BLOCKED;
+    @Column()
+    @Setter
+    private boolean reserved;
 }

@@ -1,11 +1,11 @@
 package fr.eni.bookhubback.service;
 
 
-
 import fr.eni.bookhubback.businessObject.DTO.BorrowCreateDTO;
 import fr.eni.bookhubback.businessObject.DTO.ReturnDateDTO;
 import fr.eni.bookhubback.businessObject.entity.Book;
 import fr.eni.bookhubback.businessObject.entity.Borrow;
+import fr.eni.bookhubback.businessObject.entity.Reservation;
 import fr.eni.bookhubback.businessObject.enums.AvailabilityStatus;
 import fr.eni.bookhubback.exception.BookNotFoundException;
 import fr.eni.bookhubback.exception.BorrowNotFoundException;
@@ -13,6 +13,7 @@ import fr.eni.bookhubback.exception.UserNotFoundException;
 import fr.eni.bookhubback.mapper.DTOBorrowMapper;
 import fr.eni.bookhubback.repository.BookRepository;
 import fr.eni.bookhubback.repository.BorrowRepository;
+import fr.eni.bookhubback.repository.ReservationRepository;
 import fr.eni.bookhubback.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,8 @@ public class BorrowService implements CrudService<Borrow, BorrowCreateDTO> {
     private final DTOBorrowMapper dtoBorrowMapper;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     @Override
     public List<Borrow> selectAll() {
@@ -72,11 +75,23 @@ public class BorrowService implements CrudService<Borrow, BorrowCreateDTO> {
             throw new IllegalStateException("Ce livre est déjà emprunté actuellement.");
         }
 
+        Reservation reservation =
+                reservationService.getReservationByUserAndBookId(dto.getUserId(), dto.getBookId());
+
+        if (book.isReserved() && reservation == null) {
+            throw new IllegalStateException("Ce livre est réservé par un autre utilisateur.");
+        }
+
         dto.setReturnDate(null);
+
+        if (reservation != null) {
+            reservationService.delete(reservation.getId());
+        }
 
         Borrow borrow = borrowRepository.save(dtoBorrowMapper.toBorrow(dto));
 
         book.setStatus(AvailabilityStatus.BORROWED);
+        book.setReserved(false);
         bookRepository.save(book);
 
         return borrow;
