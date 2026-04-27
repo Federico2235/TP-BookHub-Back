@@ -35,4 +35,9 @@ public class BookController {
     public void deleteBook(@PathVariable long id) {
         bookService.delete(id);
     }
+
+    @PatchMapping("/api/books/{id}")
+    public Book updateBook(@PathVariable long id, @RequestBody BookDTO dto) {
+        return bookService.patchBook(id, dto);
+    }
 }
