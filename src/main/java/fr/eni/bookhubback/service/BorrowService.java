@@ -3,11 +3,15 @@ package fr.eni.bookhubback.service;
 
 
 import fr.eni.bookhubback.businessObject.DTO.BorrowCreateDTO;
+import fr.eni.bookhubback.businessObject.DTO.ReturnDateDTO;
+import fr.eni.bookhubback.businessObject.entity.Book;
 import fr.eni.bookhubback.businessObject.entity.Borrow;
+import fr.eni.bookhubback.businessObject.enums.AvailabilityStatus;
 import fr.eni.bookhubback.exception.BookNotFoundException;
 import fr.eni.bookhubback.exception.BorrowNotFoundException;
 import fr.eni.bookhubback.exception.UserNotFoundException;
 import fr.eni.bookhubback.mapper.DTOBorrowMapper;
+import fr.eni.bookhubback.repository.BookRepository;
 import fr.eni.bookhubback.repository.BorrowRepository;
 import fr.eni.bookhubback.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +31,7 @@ public class BorrowService implements CrudService<Borrow, BorrowCreateDTO> {
     private final BorrowRepository borrowRepository;
     private final DTOBorrowMapper dtoBorrowMapper;
     private final UserRepository userRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public List<Borrow> selectAll() {
@@ -49,21 +54,54 @@ public class BorrowService implements CrudService<Borrow, BorrowCreateDTO> {
     }
 
     @Override
-    public Borrow save(BorrowCreateDTO borrowCreateDTO) {
+    public Borrow save(BorrowCreateDTO dto) {
 
-        if (borrowCreateDTO.getBorrowStart().isAfter(borrowCreateDTO.getBorrowEnd())) {
-            throw new IllegalArgumentException("La date de début ne peut pas être postérieure à la date de fin.");
+        Book book = bookRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new BookNotFoundException(dto.getBookId()));
+
+        if (dto.getBorrowStart().isAfter(dto.getBorrowEnd())) {
+            throw new IllegalArgumentException(
+                    "La date de début ne peut pas être postérieure à la date de fin."
+            );
         }
+
         boolean bookAlreadyBorrowed =
-                borrowRepository.existsByBookIdAndReturnDateIsNull(borrowCreateDTO.getBookId());
+                borrowRepository.existsByBookIdAndReturnDateIsNull(dto.getBookId());
 
         if (bookAlreadyBorrowed) {
             throw new IllegalStateException("Ce livre est déjà emprunté actuellement.");
         }
 
-        borrowCreateDTO.setReturnDate(null);
+        dto.setReturnDate(null);
 
-        return borrowRepository.save(dtoBorrowMapper.toBorrow(borrowCreateDTO));
+        Borrow borrow = borrowRepository.save(dtoBorrowMapper.toBorrow(dto));
+
+        book.setStatus(AvailabilityStatus.BORROWED);
+        bookRepository.save(book);
+
+        return borrow;
+    }
+
+    public Borrow updateReturnDate(long id, ReturnDateDTO dto) {
+        Borrow borrow = borrowRepository.findById(id)
+                .orElseThrow(() -> new BorrowNotFoundException(id));
+
+        if (dto.getReturnDate() != null &&
+                dto.getReturnDate().isBefore(borrow.getBorrowStart())) {
+
+            throw new IllegalArgumentException(
+                    "La date de retour ne peut pas être antérieure à la date de début d'emprunt."
+            );
+        }
+
+        borrow.setReturnDate(dto.getReturnDate());
+
+        if (dto.getReturnDate() != null) {
+            Book book = borrow.getBook();
+            book.setStatus(AvailabilityStatus.AVAILABLE);
+        }
+
+        return borrowRepository.save(borrow);
     }
 
     public boolean existsById(long id) {

@@ -1,12 +1,16 @@
 package fr.eni.bookhubback.controller;
 
+import fr.eni.bookhubback.businessObject.DTO.BookDTO;
 import fr.eni.bookhubback.businessObject.DTO.BorrowCreateDTO;
 import fr.eni.bookhubback.businessObject.DTO.BorrowResponseDTO;
+import fr.eni.bookhubback.businessObject.DTO.ReturnDateDTO;
+import fr.eni.bookhubback.businessObject.entity.Book;
 import fr.eni.bookhubback.businessObject.entity.Borrow;
 import fr.eni.bookhubback.businessObject.entity.Reservation;
 import fr.eni.bookhubback.exception.BorrowNotFoundException;
 import fr.eni.bookhubback.exception.UserNotFoundException;
 import fr.eni.bookhubback.mapper.DTOBorrowMapper;
+import fr.eni.bookhubback.service.BookService;
 import fr.eni.bookhubback.service.BorrowService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,7 @@ public class BorrowController {
 
     private final BorrowService borrowService;
     private final DTOBorrowMapper dtoBorrowMapper;
+    private final BookService bookService;
 
 
     @GetMapping("/api/borrows")
@@ -73,5 +78,13 @@ public class BorrowController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
         }
+    }
+
+    @PatchMapping("/api/borrows/{id}/return-date")
+    public Borrow updateReturnDate(
+            @PathVariable long id,
+            @RequestBody ReturnDateDTO dto
+    ) {
+        return borrowService.updateReturnDate(id, dto);
     }
 }

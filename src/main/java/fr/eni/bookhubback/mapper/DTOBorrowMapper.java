@@ -3,6 +3,7 @@ package fr.eni.bookhubback.mapper;
 
 import fr.eni.bookhubback.businessObject.DTO.BorrowCreateDTO;
 import fr.eni.bookhubback.businessObject.DTO.BorrowResponseDTO;
+import fr.eni.bookhubback.businessObject.DTO.UserResponseDTO;
 import fr.eni.bookhubback.businessObject.entity.Book;
 import fr.eni.bookhubback.businessObject.entity.Borrow;
 import fr.eni.bookhubback.businessObject.entity.User;
@@ -19,14 +20,24 @@ public class DTOBorrowMapper {
     public BorrowResponseDTO toResponseDTO(Borrow borrow) {
         BorrowResponseDTO borrowResponseDTO = new BorrowResponseDTO();
         borrowResponseDTO.setBorrowId(borrow.getBorrowId());
-        borrowResponseDTO.setBookId(borrow.getBook().getId());
-        borrowResponseDTO.setUserId(borrow.getUser().getId());
+        borrowResponseDTO.setBook(borrow.getBook());
+        borrowResponseDTO.setUser(mapUser(borrow.getUser()));
         borrowResponseDTO.setBorrowStart(borrow.getBorrowStart());
         borrowResponseDTO.setBorrowEnd(borrow.getBorrowEnd());
         borrowResponseDTO.setReturnDate(borrow.getReturnDate());
 
         return borrowResponseDTO;
     }
+
+    private UserResponseDTO mapUser(User user) {
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        return dto;
+    }
+
     //Convertit un BorrowDTO en une instance de Borrow en utilisant un constructeur vide + setters
     public Borrow toBorrow(BorrowCreateDTO borrowCreateDTO) {
         //Récupère la Category grâce à la categoryId présente dans le BorrowDTO
