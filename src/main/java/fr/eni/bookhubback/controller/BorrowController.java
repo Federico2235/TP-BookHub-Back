@@ -62,6 +62,12 @@ public class BorrowController {
         }
     }
 
+    /**
+     * Crée un nouvel emprunt pour un livre.
+     * Vérifie que le livre est disponible, gère la réservation éventuelle
+     * et met à jour le statut du livre en conséquence.
+     */
+
     @PostMapping("/api/borrows")
     public ResponseEntity<?> saveBorrow(@RequestBody @Nonnull @Validated BorrowCreateDTO borrowCreateDTO) {
         borrowService.save(borrowCreateDTO);
