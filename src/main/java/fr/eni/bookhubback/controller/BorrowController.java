@@ -102,4 +102,16 @@ public class BorrowController {
     ) {
         return borrowService.updateReturnDate(id, dto);
     }
+
+    @GetMapping("/api/borrows/book/{id}")
+    public ResponseEntity<?> getBorrowByBookId(@PathVariable long id) {
+        try {
+            Borrow borrow = borrowService.findByBookId(id);
+            return ResponseEntity.ok(dtoBorrowMapper.toResponseDTO(borrow));
+
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
 }
