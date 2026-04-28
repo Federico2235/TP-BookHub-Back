@@ -23,6 +23,7 @@ public class DTOUserMapper {
 
     public UserResponseDTO toResponseDTO(User user) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setUserId(user.getId());
         userResponseDTO.setFirstName(user.getFirstName());
         userResponseDTO.setLastName(user.getLastName());
         userResponseDTO.setEmail(user.getEmail());
