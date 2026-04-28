@@ -1,9 +1,12 @@
 package fr.eni.bookhubback.controller;
 
 import fr.eni.bookhubback.businessObject.DTO.ReservationDTO;
+import fr.eni.bookhubback.businessObject.DTO.ReservationResponseDTO;
 import fr.eni.bookhubback.businessObject.entity.Reservation;
 import fr.eni.bookhubback.businessObject.entity.User;
+import fr.eni.bookhubback.mapper.DTOReservationMapper;
 import fr.eni.bookhubback.service.ReservationService;
+import fr.eni.bookhubback.service.UserService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -16,20 +19,29 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final DTOReservationMapper reservationMapper;
 
     @GetMapping("/api/reservations")
-    public List<Reservation> getReservations() {
-        return reservationService.selectAll();
+    public List<ReservationResponseDTO> getReservations() {
+        return reservationService.selectAll()
+                .stream()
+                .map(reservationMapper::toReservationResponseDTO)
+                .toList();
     }
 
     @GetMapping("/api/reservations/{id}")
-    public Reservation getReservation(@PathVariable long id) {
-        return reservationService.selectById(id);
+    public ReservationResponseDTO getReservation(@PathVariable long id) {
+        return reservationMapper.toReservationResponseDTO(
+                reservationService.selectById(id)
+        );
     }
 
     @GetMapping("/api/reservations/user/{id}")
-    public List<Reservation> getUserReservations(@PathVariable Long id) {
-        return this.reservationService.getUserReservations(id);
+    public List<ReservationResponseDTO> getUserReservations(@PathVariable Long id) {
+        return reservationService.getUserReservations(id)
+                .stream()
+                .map(reservationMapper::toReservationResponseDTO)
+                .toList();
     }
 
     @PostMapping("/api/reservations")
