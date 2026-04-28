@@ -86,6 +86,15 @@ public class BorrowController {
         }
     }
 
+    /**
+     * Met à jour la date de retour d’un emprunt existant.
+     * Vérifie que la date de retour n’est pas antérieure à la date de début d’emprunt.
+     * Si une date de retour est définie, le livre associé est marqué comme disponible.
+     *
+     * @param id identifiant de l’emprunt à mettre à jour
+     * @param dto objet contenant la nouvelle date de retour
+     * @return l’emprunt mis à jour
+     */
     @PatchMapping("/api/borrows/{id}/return-date")
     public Borrow updateReturnDate(
             @PathVariable long id,
