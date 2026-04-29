@@ -35,10 +35,24 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/books").hasAnyRole("LIBRARIAN", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/books/**").hasAnyRole("LIBRARIAN", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("LIBRARIAN", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/reservations/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasAnyRole("MEMBER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/api/borrows/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/borrows/**").hasAnyRole("LIBRARIAN", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/borrows/**").hasAnyRole("LIBRARIAN", "ADMIN")
+
                         .anyRequest().authenticated()
                 );
 
