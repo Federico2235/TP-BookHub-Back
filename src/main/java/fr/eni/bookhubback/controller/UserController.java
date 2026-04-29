@@ -1,6 +1,9 @@
 package fr.eni.bookhubback.controller;
+import fr.eni.bookhubback.businessObject.DTO.ReturnDateDTO;
+import fr.eni.bookhubback.businessObject.DTO.RoleDTO;
 import fr.eni.bookhubback.businessObject.DTO.UserCreateDTO;
 import fr.eni.bookhubback.businessObject.DTO.UserResponseDTO;
+import fr.eni.bookhubback.businessObject.entity.Borrow;
 import fr.eni.bookhubback.businessObject.entity.User;
 import fr.eni.bookhubback.exception.UserNotFoundException;
 import fr.eni.bookhubback.service.UserService;
@@ -58,4 +61,14 @@ public class UserController {
     public void deleteUser(@PathVariable long id) {
         userService.delete(id);
     }
+
+    @PatchMapping("/api/users/{id}/role")
+    public UserResponseDTO updateRole(
+            @PathVariable long id,
+            @RequestBody RoleDTO dto
+    ) {
+        User user = userService.updateRole(id, dto);
+        return dtoUserMapper.toResponseDTO(user);
+    }
+
 }
