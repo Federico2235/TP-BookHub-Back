@@ -135,6 +135,6 @@ public class BorrowService implements CrudService<Borrow, BorrowCreateDTO> {
         if (!bookRepository.existsById(id)) {
             throw new BookNotFoundException(id);
         }
-        return borrowRepository.findBorrowByBookId(id);
+        return borrowRepository.findBorrowByBookIdAndReturnDateIsNull(id);
     }
 }
