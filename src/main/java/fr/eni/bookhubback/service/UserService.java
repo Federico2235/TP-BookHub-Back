@@ -1,5 +1,6 @@
 package fr.eni.bookhubback.service;
 
+import fr.eni.bookhubback.businessObject.DTO.RoleDTO;
 import fr.eni.bookhubback.businessObject.DTO.UserCreateDTO;
 import fr.eni.bookhubback.businessObject.DTO.UserResponseDTO;
 import fr.eni.bookhubback.businessObject.entity.User;
@@ -50,5 +51,14 @@ public class UserService implements CrudService<User, UserCreateDTO>{
 
     public boolean existsByEmail(String email) {
         return userRepository.findByEmail(email).isPresent();
+    }
+
+    public User updateRole(long userId, RoleDTO roleDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        user.setRole(roleDTO.getRole());
+
+        return userRepository.save(user);
     }
 }
