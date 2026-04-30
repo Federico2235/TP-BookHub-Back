@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/api/reservations/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasAnyRole("MEMBER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasAnyRole("MEMBER","LIBRARIAN","ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/api/borrows/**").authenticated()
