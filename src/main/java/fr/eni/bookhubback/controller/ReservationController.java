@@ -9,6 +9,7 @@ import fr.eni.bookhubback.service.ReservationService;
 import fr.eni.bookhubback.service.UserService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,12 +44,12 @@ public class ReservationController {
                 .map(reservationMapper::toReservationResponseDTO)
                 .toList();
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/api/reservations")
     public Reservation saveReservation(@RequestBody @Nonnull @Validated ReservationDTO reservationDto) {
         return reservationService.save(reservationDto);
     }
-
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/api/reservations/{id}")
     public void deleteReservation(@PathVariable long id) {
         reservationService.delete(id);

@@ -16,6 +16,7 @@ import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class BorrowController {
     private final DTOBorrowMapper dtoBorrowMapper;
     private final BookService bookService;
 
-
+    @PreAuthorize("hasAnyRole('LIBRARIAN', 'ADMIN')")
     @GetMapping("/api/borrows")
     public List<BorrowResponseDTO> getBorrows() {
         return borrowService.selectAll().stream()
@@ -74,7 +75,7 @@ public class BorrowController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(borrowCreateDTO);
     }
-
+    @PreAuthorize("hasAnyRole('LIBRARIAN', 'ADMIN')")
     @DeleteMapping("/api/borrows/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable long id) {
         try {
@@ -95,6 +96,7 @@ public class BorrowController {
      * @param dto objet contenant la nouvelle date de retour
      * @return l’emprunt mis à jour
      */
+    @PreAuthorize("hasAnyRole('LIBRARIAN', 'ADMIN')")
     @PatchMapping("/api/borrows/{id}/return-date")
     public Borrow updateReturnDate(
             @PathVariable long id,
