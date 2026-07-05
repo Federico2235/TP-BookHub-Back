@@ -1,25 +1,60 @@
-version: '3.8'
-
 services:
-
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver-bookhub
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Pa$$w0rd123!"
+      MSSQL_SA_PASSWORD: "Pa$$w0rd123!"
     ports:
       - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
     restart: unless-stopped
+
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-bookhub-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    command: >
+      bash -c "
+      /opt/mssql-tools18/bin/sqlcmd
+      -S sqlserver
+      -U sa
+      -P 'Pa$$w0rd123!'
+      -C
+      -Q \"IF DB_ID('BOOKHUB') IS NULL CREATE DATABASE BOOKHUB\"
+      "
+    restart: "no"
 
   bookhub-back:
     build: .
     container_name: bookhub-back
     depends_on:
-      - sqlserver
+      sqlserver-init:
+        condition: service_completed_successfully
     ports:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:sqlserver://sqlserver:1433;databaseName=BOOKHUB;encrypt=true;trustServerCertificate=true
       SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD: Pa$$w0rd123!
+      SPRING_DATASOURCE_PASSWORD: "Pa$$w0rd123!"
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.SQLServerDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_SQL_INIT_MODE: always
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+    restart: unless-stopped
+
+  bookhub-front:
+    build: ../../Front/TP-BookHub-Front
+    container_name: bookhub-front
+    depends_on:
+      - bookhub-back
+    ports:
+      - "4200:80"
+    restart: unless-stopped
